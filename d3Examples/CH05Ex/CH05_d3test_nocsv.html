@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 Page Template</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			/* dataset is an array of numbers we made up*/
+			var dataset = [5, 10, 15, 20, 25];
+
+			/* Using d3, you SELECT the body area, and SELECTALL the paragraph's.
+			They currently don't exist, but we are taking the DATA from dataset.
+			ENTER looks at the dom, and if there are more data values than dom (there are 0 doms that exist right now), then it creates a new placeholder
+			element. APPENDS a paragraph, and adds the TEXT "New paragraph!". */
+			// Note ";" needs to be at the last thing, not all
+			d3.select("body").selectAll("p") 
+				.data(dataset)
+				.enter()
+				.append("p")
+				.style("color", function(datanum) { 
+					if (datanum > 15) {
+						return "orange";
+					} else {
+						return "purple";
+					}
+				})
+				.text(function(datanum) { // Anon function
+					/* .text ( function division(datanum)
+					{var divide = datanum/5;
+					return divide;} );*/
+					return "5 x " + (datanum/5) + " is " + datanum; }); 
+
+
+
+
+		</script>
+	</body>
+</html>

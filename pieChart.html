@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Pie layout</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">
+
+			text {
+				font-family: sans-serif;
+				font-size: 12px;
+				fill: white;
+			}
+
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+		var dataset = [ 5, 10, 20, 45, 6, 25 ];
+
+		var pie = d3.layout.pie();
+		var color = d3.scale.category10();
+
+		var wid = 300;
+		var hei = 300;
+
+		var outerRadius = wid / 2; 
+		var innerRadius = wid /4;
+
+		var arc = d3.svg.arc()
+				.innerRadius(innerRadius) // lol wat
+				.outerRadius(outerRadius);
+
+
+		var svg = d3.select("body")
+					.append("svg")
+					.attr({
+						width: wid,
+						height: hei
+					});
+		var arcs = svg.selectAll("g.arc")
+						.data(pie(dataset)) // set data & pie info takes dataset
+						.enter()
+						.append("g") // grouping
+						.attr({
+							class: "arc",
+							transform: "translate(" + outerRadius + ", " + outerRadius + ")"
+						});
+		arcs.append("path")
+			.attr({
+				fill: function(data, index) { return color(index); },
+				d: arc
+			});
+		arcs.append("text")
+			.attr({
+				transform: function(data) { return "translate(" + arc.centroid(data) + ")"; },
+				'text-anchor': "middle"
+			})
+			.text(function(data) {return data.value; });
+		</script>
+	</body>
+</html>

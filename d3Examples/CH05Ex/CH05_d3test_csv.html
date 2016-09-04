@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 Page Template</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var dataset; // Global so you it will run after all data loaded
+
+			d3.csv("food.csv", function(error, data) {
+				if (error) {
+					console.log(error);
+				} else {
+					console.log(data);
+			dataset = data;
+			// Then call other functions here to generate visualization
+
+				}
+			});
+			// Beautiful D3 code here
+			d3.select("body") // In body adds a paragrpah of new text underneath script on web
+				.append("p")
+				.text("New Paragraph!");
+		</script>
+	</body>
+</html>
+
+

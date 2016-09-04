@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 Page Template</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">  
+
+			div.bar {
+				display: inline-block; 
+				width: 20px;
+				height: 75px; /* Gets overriden by height below*/
+				background-color: teal;
+				margin-right: 2px
+			}
+
+		</style>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			/* dataset is an array of numbers we made up*/
+			var dataset = [5, 10, 13, 19, 21, 23];
+			var svgWidth = 500;
+			var svgHeight = 100;
+
+			/* Creating an empty SVG element */
+			var svg = d3.select("body")
+				.append("svg")
+				.attr("width", svgWidth)
+				.attr("height", svgHeight);
+			
+			for (var i=0; i < 25; i++) {
+				var newNum = Math.floor(Math.random() * 30);
+				dataset.push(newNum);
+			}
+
+			d3.select("body").selectAll("div")
+				.data(dataset)
+				.enter()
+				.append("div") // adds a div
+				.attr("class", "bar") // assigns a class the name bar
+				.style("height", function(data) {
+					var barHeight = data * 5;
+					return barHeight + "px";
+				});
+
+		</script>
+	</body>
+</html> 

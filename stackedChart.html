@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Pie layout</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+		var dataset = [
+				// Gives which grouping it's in (0-4), and how many there are in that grouping
+				[
+					{ x: 0, y: 5 },
+					{ x: 1, y: 4 },
+					{ x: 2, y: 2 },
+					{ x: 3, y: 7 },
+					{ x: 4, y: 23 }
+				],
+				[
+					{ x: 0, y: 10 },
+					{ x: 1, y: 12 },
+					{ x: 2, y: 19 },
+					{ x: 3, y: 23 },
+					{ x: 4, y: 17 }
+				],
+				[
+					{ x: 0, y: 22 },
+					{ x: 1, y: 28 },
+					{ x: 2, y: 32 },
+					{ x: 3, y: 35 },
+					{ x: 4, y: 43 }
+				]
+			];
+
+		var wid = 300;
+		var hei = 500;
+
+		var stack = d3.layout.stack();
+		stack(dataset);
+
+		var colors = d3.scale.category10();
+		// Set up scaling
+		var xScale = d3.scale.ordinal()
+						.domain(d3.range(dataset[0].length)) //length of 5 (same # of each grouping)
+						.rangeRoundBands([0, wid], 0.05);
+		var yScale = d3.scale.linear()
+						.domain([0, d3.max(dataset, function(data) { 
+							return d3.max(data, function(data) 
+								{ return data.y0 + data.y; } ); // why y0+y TOTAL OVERALL?
+							})
+						])
+						.range([0, hei]);
+
+
+		var svg = d3.select("body")
+					.append("svg")
+					.attr({
+						width: wid,
+						height: hei
+					});
+
+		var grouping = svg.selectAll("g")
+							.data(dataset)
+							.enter()
+							.append("g")
+							.style("fill", function(data, index) {
+									return colors(index);
+							});
+
+		var rects = grouping.selectAll("rect")
+			.data(function(data) { return data; })
+			.enter()
+			.append("rect")
+			.attr({
+				x: function(data, index) { return xScale(index); },
+				y: function(data) { return yScale(data.y0); },
+				height: function(data) { return yScale(data.y); },
+				width: xScale.rangeBand()
+			});
+		</script>
+	</body>
+</html>

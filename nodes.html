@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Pie layout</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+		var wid = 600;
+		var hei = 500;
+
+		var dataset = {
+			nodes: [
+				{ name: "biggie" },
+				{ name: "biggiesBooty" },
+				{ name: "biggiesTail" },
+				{ name: "calvin" },
+				{ name: "calvinsFarts" },
+				{ name: "calvinsTail" },
+				{ name: "bunny" },
+				{ name: "bunnyPoop1" },
+				{ name: "bunnyPoop2" },
+				{ name: "bunnyPoop3" }
+			],
+			edges: [ 
+				{ source: 0, target: 1 },
+				{ source: 0, target: 2 },
+				{ source: 0, target: 3 },
+				{ source: 0, target: 4 },
+				{ source: 1, target: 5 },
+				{ source: 1, target: 6 },
+				{ source: 2, target: 3 },
+				{ source: 3, target: 5 },
+				{ source: 4, target: 5 },
+				{ source: 5, target: 2 },
+				{ source: 6, target: 7 },
+				{ source: 8, target: 1 },
+				{ source: 9, target: 8 }
+			]
+		};
+
+		var force = d3.layout.force()
+							.nodes(dataset.nodes)
+							.links(dataset.edges)
+							.size([wid, hei])
+							.linkDistance([75])
+							.charge([-150])
+							.start();
+
+		var colors = d3.scale.category10();
+
+		var svg = d3.select("body")
+					.append("svg")
+					.attr({
+						width: wid,
+						height: hei
+					});
+
+		var edges = svg.selectAll("line")
+						.data(dataset.edges)
+						.enter()
+						.append("line")
+						.style({
+							stroke: "#ccc",
+							'stroke-width': 1
+						});
+
+		var nodes = svg.selectAll("circle")
+						.data(dataset.nodes)
+						.enter()
+						.append("circle")
+						.attr({
+							r: 10,
+							fill: function(data, index) { return colors(index); }
+						})
+						.call(force.drag);
+
+		/* Every time simulation "ticks", this thing will be called 
+		 Changing of the source and target is going and moving the nodes */				
+		force.on("tick", function() {
+			edges.attr({
+				x1: function(data) { return data.source.x; },
+				y1: function(data) { return data.source.y; },
+				x2: function(data) { return data.target.x; },
+				y2:	function(data) { return data.target.y; }
+			});
+			nodes.attr({
+				cx: function(data) { return data.x },
+				cy: function(data) { return data.y }
+			});
+		});
+
+
+		</script>
+	</body>
+</html>

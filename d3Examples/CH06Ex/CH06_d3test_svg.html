@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 Page Template</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">  
+
+		</style>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			
+			var dataset = [5, 10, 15, 20, 25];
+
+			var width = 500;
+			var height = 50;
+
+
+			/*  All references to circles, and however many data set points we have.
+				ENTER() creates a placeholder of how many elements we have, and add circles */
+			var circles = svg.selectAll("circles")
+							.data(dataset)
+							.enter()
+							.append("circle"); 
+
+			circles.attr("cx", function(data, index) { // x position value of center of circle
+				return (index * 50) + 25; 
+			})	
+				.attr("cy", height/2)  // y position value of center of circle
+				.attr("r", function(data) { // radius is data
+					return data;
+				})
+				.attr("fill", "yellow")
+				.attr("stroke", "orange")
+				.attr("stroke-width", function(data) { // Aligned to outer rim of shape
+					return data/2;
+				});
+		</script>
+	</body>
+</html> 

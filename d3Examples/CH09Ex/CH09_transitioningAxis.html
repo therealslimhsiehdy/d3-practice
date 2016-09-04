@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 Page Template</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css"> /* with svg, you must use svg calls */ 
+			.axis path,
+			.axis line {
+				fill: none;
+				stroke: black;
+				shape-rendering: crispEdges; /* creates clean rendering */
+			}
+			.axis text {
+				font-family: sans-serif;
+				font-size: 11px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<p> YASS CLICK HERE</p>
+		<script type="text/javascript">
+		
+			var svgWidth = 500;
+			var svgHeight = 300;
+			var padding = 30; 
+
+			var dataset = [];
+			var numDataPoints = 50;
+			var maxRange = Math.random() * 1000;
+			for (var i = 0; i < numDataPoints; i++) {
+				var newNumber1 = Math.floor(Math.random() * maxRange);
+				var newNumber2 = Math.floor(Math.random() * maxRange);
+				dataset.push([newNumber1, newNumber2]);
+			}
+
+            var xScale = d3.scale.linear()
+            	.domain([0, d3.max(dataset, function(data) { return data[0]; }) ])
+            	.range([padding, svgWidth - padding * 2]);
+
+            var yScale = d3.scale.linear()
+            	.domain([0, d3.max(dataset, function(data) { return data[1]; }) ])
+            	.range([svgHeight - padding, padding]);	
+
+           	var xAxis = d3.svg.axis()
+           					.scale(xScale)
+           					.orient("bottom")
+           					.ticks(5); 
+
+           	var yAxis = d3.svg.axis()
+           					.scale(yScale)
+           					.orient("left")
+           					.ticks(5);
+
+            // Create svg element
+            var svg = d3.select("body")
+            			.append("svg")
+            			.attr ({
+            				width: svgWidth,
+            				height: svgHeight
+            			});
+            			
+
+            /* This is shell encaser where it clips path of those that aren't in the range. By creating a rectangle if allows you to show what's in the rectangle
+            and everything else that doesn't fit is "clipped" off */			
+            svg.append("clipPath") //element name clipPath
+            	.attr("id", "chart-area")
+            	.append("rect")
+            	.attr({
+            		x: padding,
+            		y: padding,
+            		width: svgWidth - padding * 3,
+            		height: svgHeight - padding * 2
+            	});
+
+            /* WHY???? Within here, you have to put in the circles for the beginning */
+            svg.append("g")
+         		.attr  ({
+         			id: "circles", // assigning class of circleS N O T circle
+         			'clip-path': "url(#chart-area)" // referencing clip in attribute name
+         		})
+         		.selectAll("circle")
+         		.data(dataset)
+         		.enter() // create a new one
+         		.append("circle")
+         		.attr({ // so you build the circles in here?
+         			cx: function(data) { return xScale(data[0]); },
+         			cy: function(data) { return yScale(data[1]); },
+         			r: 2
+         		});
+
+            svg.append("g")
+            	.attr({
+            		class: "x axis", 
+            		transform: "translate(0," + (svgHeight - padding) + ")"
+            	})
+            	.call(xAxis);
+
+           	svg.append("g")
+           		.attr({
+           			class: "y axis",
+           			transform: "translate(" + padding + ",0)"
+         		})
+         		.call(yAxis);
+
+         	d3.select("p") // Make sure you are calling this as a d3 function!
+         		.on("click", function() {
+
+				var numVal = dataset.length;
+				var maxRange  = Math.random() * 1000;
+
+				dataset = [];
+
+				for (var i = 0; i < numVal; i++) {
+					var newNumber1 = Math.floor(Math.random() * maxRange);
+					var newNumber2 = Math.floor(Math.random() * maxRange);
+					dataset.push([newNumber1, newNumber2]);
+				}
+
+			 	xScale.domain([0, d3.max(dataset, function(data) { return data[0]; })]);
+				yScale.domain([0, d3.max(dataset, function(data) { return data[1]; })]);
+
+            	
+           		svg.selectAll("circle")
+            		.data(dataset)
+					.transition()
+					.duration(1000)
+					/* transition start */
+					.each("start", function() {
+						d3.select(this)
+							.attr ({
+								fill: "orange",
+								r: 5
+							});
+					})
+            		.attr ({
+            			cx: function(data) { return xScale(data[0]); },
+       					cy: function(data) { return yScale(data[1]); }
+      				})
+      				.each("end", function() {
+      					d3.select(this)
+      						.transition()
+      						.duration(1000)
+      						.attr ({
+      							fill: "magenta",
+      							r: 2
+      						});
+
+      				});
+
+            	svg.select(".x.axis")
+            		.transition()
+            		.duration(1000)
+            		.call(xAxis);
+            	svg.select(".y.axis")
+            		.transition()
+            		.duration(1000)
+              		.call(yAxis);
+
+
+         	}); // This closes whole svg select clicking
+		</script>
+	</body>
+</html> 
